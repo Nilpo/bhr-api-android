@@ -38,35 +38,35 @@ import java.net.URL;
 import java.util.*;
 import java.security.NoSuchAlgorithmException;
 import java.security.KeyManagementException;
-import sun.misc.BASE64Encoder;
+import android.util.Base64;
 
 public class BambooHTTPClient {
 	private String basicAuthUsername="";
 	private String basicAuthPassword;
 	private TrustManager[] trustManager;
-   	private	SSLContext sslContext = null;
+	private	SSLContext sslContext = null;
 
 	public static String slurp (InputStream in) throws IOException {
-    		StringBuffer out = new StringBuffer();
-    		byte[] b = new byte[4096];
-    		for (int n; (n = in.read(b)) != -1;) {
-    		    out.append(new String(b, 0, n));
-    		}
+			StringBuffer out = new StringBuffer();
+			byte[] b = new byte[4096];
+			for (int n; (n = in.read(b)) != -1;) {
+				out.append(new String(b, 0, n));
+			}
 		return out.toString();
 	}
 
 	public BambooHTTPClient() {
 		trustManager = new TrustManager[] {new TrustEverythingTrustManager()};
 
-    		// Let us create the factory where we can set some parameters for the connection
-    		try {
-    		    sslContext = SSLContext.getInstance("SSL");
-    		    sslContext.init(null, trustManager, new java.security.SecureRandom());
-    		} catch (NoSuchAlgorithmException e) {
-    		    // do nothing
-    		}catch (KeyManagementException e) {
-    		    // do nothing
-    		}
+			// Let us create the factory where we can set some parameters for the connection
+			try {
+				sslContext = SSLContext.getInstance("SSL");
+				sslContext.init(null, trustManager, new java.security.SecureRandom());
+			} catch (NoSuchAlgorithmException e) {
+				// do nothing
+			}catch (KeyManagementException e) {
+				// do nothing
+			}
 
 	}
 
@@ -79,7 +79,7 @@ public class BambooHTTPClient {
 
 	public BambooHTTPResponse  sendRequest(BambooHTTPRequest req) {
 		BambooHTTPResponse ret=new BambooHTTPResponse();
-    		HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+			HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
 		try {
 			URL url=new URL(req.url);
 			HttpsURLConnection connection = (HttpsURLConnection)url.openConnection();
@@ -92,13 +92,12 @@ public class BambooHTTPClient {
 			}
 
 			if(!basicAuthUsername.equals("")) {
-    				BASE64Encoder enc = new sun.misc.BASE64Encoder();
-      				String userpassword = basicAuthUsername+":"+basicAuthPassword;
-      				String encodedAuthorization = enc.encode( userpassword.getBytes() );
-      				connection.setRequestProperty("Authorization", "Basic "+ encodedAuthorization);
+				String userpassword = basicAuthUsername+":"+basicAuthPassword;
+				byte[] encodedAuthorization = Base64.encode(userpassword.getBytes(), Base64.DEFAULT);
+				connection.setRequestProperty("Authorization", "Basic "+ new String(encodedAuthorization));
 			}
 
-       
+
 			if(req.content.length()>0) {
 				connection.setDoOutput(true);
 				OutputStream out=connection.getOutputStream();
@@ -129,21 +128,20 @@ public class BambooHTTPClient {
 		return ret;
 	}
 
-
 }
 
 class TrustEverythingTrustManager implements X509TrustManager {
-       	public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-       	    return null;
-       	}
+	public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+		return null;
+	}
 
-      	public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {   }
-       	public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {   }
+	public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {   }
+	public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {   }
 }
 
 class VerifyEverythingHostnameVerifier implements HostnameVerifier {
 	public boolean verify(String string, SSLSession sslSession) {
-       	    return true;
-       	}
+		return true;
+	}
 }	
 
