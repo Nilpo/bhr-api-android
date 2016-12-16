@@ -1,7 +1,10 @@
 
 /*
 
-Copyright (c) 2011, Bamboo HR LLC
+Copyright (c) 2016, Rob Dunham
+All rights reserved.
+
+Portions (c) 2011, Bamboo HR LLC
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
