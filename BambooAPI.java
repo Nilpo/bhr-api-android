@@ -33,13 +33,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 import java.io.*;
-import javax.net.ssl.*;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.*;
-import java.security.NoSuchAlgorithmException;
-import java.security.KeyManagementException;
-import sun.misc.BASE64Encoder;
 
 public class BambooAPI {
 	protected BambooHTTPClient httpHandler;
